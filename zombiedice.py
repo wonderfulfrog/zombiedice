@@ -18,8 +18,6 @@ class Game(object):
             self.players.append(Player(raw_input()))
         print
 
-        self.play()
-
     def play(self):
         die = [
             GreenDice(), GreenDice(), GreenDice(), GreenDice(),
@@ -93,4 +91,6 @@ class Game(object):
                     status = False
                     break
 
-x = Game()
+if __name__ == '__main__':
+    game = Game()
+    game.play()
