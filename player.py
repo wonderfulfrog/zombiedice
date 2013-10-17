@@ -1,28 +1,28 @@
 class Player(object):
-    p_score = 0
-    p_rounds = 0
-    p_cshotguns = 0
-    p_name = "Guest"
+    score = 0
+    rounds = 0
+    shotguns = 0
+    name = "Guest"
 
-    def __init__(self, p_name):
-        self.p_score = 0
-        self.p_rounds = 0
-        self.p_cshotguns = 0
-        self.p_name = p_name
+    def __init__(self, name):
+        self.score = 0
+        self.rounds = 0
+        self.shotguns = 0
+        self.name = name
 
     def __repr__(self):
-        return self.p_name
+        return self.name
 
-    def score(self, score):
-        self.p_score += score
+    def increment(self, score):
+        self.score += score
 
     def shotgun(self):
-        self.p_cshotguns += 1
+        self.shotguns += 1
 
     def reset_shotguns(self):
-        self.p_cshotguns = 0
+        self.shotguns = 0
 
     def reset(self):
-        self.p_score = 0
-        self.p_rounds = 0
-        self.p_cshotguns = 0
+        self.score = 0
+        self.rounds = 0
+        self.shotguns = 0

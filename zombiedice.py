@@ -21,9 +21,6 @@ class Game(object):
         self.play()
 
     def play(self):
-        # greenDice = GreenDice()
-        # yellowDice = YellowDice()
-        # redDice = RedDice()
         die = [
             GreenDice(), GreenDice(), GreenDice(), GreenDice(),
             GreenDice(), GreenDice(), YellowDice(), YellowDice(),
@@ -35,16 +32,16 @@ class Game(object):
 
         while status:
             for current_player in self.players:
-                p_turn = True
+                player_turn = True
                 print "Current rankings:"
                 for scored_player in self.players:
                     print "%s: %d brains" % (
-                        scored_player, scored_player.p_score)
+                        scored_player, scored_player.score)
 
                 print
 
-                c_pscore = 0
-                while p_turn:
+                current_turn_score = 0
+                while player_turn:
                     roll = []
                     print "It's your turn, %s !" % current_player
                     action = raw_input(
@@ -66,31 +63,31 @@ class Game(object):
 
                         for roll in rolls:
                             if roll == 1:
-                                c_pscore += 1
+                                current_turn_score += 1
                             if roll == 3:
                                 current_player.shotgun()
 
                         print "%s's current score:" % current_player
-                        print "Brains: %d" % c_pscore
-                        print "Shotguns: %d" % current_player.p_cshotguns
+                        print "Brains: %d" % current_turn_score
+                        print "Shotguns: %d" % current_player.shotguns
                         print
 
-                        if current_player.p_cshotguns >= 3:
+                        if current_player.shotguns >= 3:
                             print "%s was SHOTGUNNED!" % current_player
                             print
-                            current_player.p_rounds += 1
+                            current_player.rounds += 1
                             current_player.reset_shotguns()
-                            p_turn = False
+                            player_turn = False
 
                     elif action in ("score", "s"):
                         print "%s scored %d brains!" % (
-                            current_player, c_pscore)
-                        current_player.score(c_pscore)
-                        current_player.p_rounds += 1
+                            current_player, current_turn_score)
+                        current_player.increment(current_turn_score)
+                        current_player.rounds += 1
                         current_player.reset_shotguns()
-                        p_turn = False
+                        player_turn = False
 
-                if current_player.p_score >= 13:
+                if current_player.score >= 13:
                     print "%s has won!" % current_player
                     print
                     status = False

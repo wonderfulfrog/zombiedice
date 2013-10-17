@@ -4,7 +4,7 @@ import random
 class Dice(object):
     "1 = brain, 2 = run away, 3 = shotgun"
     def __repr__(self):
-        return self.d_name
+        return self.name
 
     def roll(self):
         random.seed()
@@ -13,14 +13,14 @@ class Dice(object):
 
 class GreenDice(Dice):
     sides = [1, 1, 1, 2, 2, 3]
-    d_name = "Green Dice"
+    name = "Green Dice"
 
 
 class YellowDice(Dice):
     sides = [1, 1, 2, 2, 2, 3]
-    d_name = "Yellow Dice"
+    name = "Yellow Dice"
 
 
 class RedDice(Dice):
     sides = [1, 2, 2, 2, 3, 3]
-    d_name = "Red Dice"
+    name = "Red Dice"
