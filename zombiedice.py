@@ -1,87 +1,99 @@
-from player import *
-from dice import *
+import random
+from player import Player
+from dice import GreenDice, YellowDice, RedDice
+
 
 class Game(object):
-	g_players = []
-	g_numplayers = 0
-	g_currp = ''
-	
-	g_status = True
-	
-	def __init__(self):
-		print "Welcome to Zombie Dice!\n"
-		numplayers = raw_input("How many players are there? ")
-		self.g_numplayers = int(numplayers)
-		
-		for x in range(1,self.g_numplayers+1):
-			print "Player " + str(x) + ", what is your name?"
-			self.g_players.append(Player(raw_input()))
-			
-		print "\n"
-		
-		self.play()
-			
-	def play(self):
-		greenDice = GreenDice();
-		yellowDice = YellowDice();
-		redDice = RedDice();
-		die = [ greenDice, greenDice, greenDice, greenDice,
-		  		greenDice, greenDice, yellowDice, yellowDice,
-		 		yellowDice, yellowDice, redDice, redDice, redDice ]
-		faces = [ '', 'Brain', 'Footprints', 'Shotgun' ]
-		
-		while self.g_status:
-			for x in range(0,self.g_numplayers):
-				p_turn = True
-				print "Current rankings:"
-				for y in range(0,self.g_numplayers):
-					print self.g_players[y].p_name + ": " + str(self.g_players[y].p_score) + " brains"
-					
-				print "\n"
-				
-				c_pscore = 0
-				while p_turn:
-					roll = []
-					print "It's your turn, " + self.g_players[x].p_name + "!"
-					action = raw_input("What will you do?  ('(r)oll', '(s)core') ")
-					if action=="roll" or action=="r":
-						p_die = [ die[random.randint(0,12)], die[random.randint(0,12)], die[random.randint(0,12)] ]
-						roll = [ p_die[0].roll(), p_die[1].roll(), p_die[2].roll() ]
-						print self.g_players[x].p_name + " rolled:"
-						
-						for y in range(0,3):
-							print p_die[y].d_name + ": " + faces[roll[y]]
-							
-						print "\n"
-						
-						for y in roll:
-							if y==1:
-								c_pscore += 1
-							if y==3:
-								self.g_players[x].shotgun()
-								
-						print self.g_players[x].p_name + "'s current score:"
-						print "Brains: " + str(c_pscore)
-						print "Shotguns: " + str(self.g_players[x].p_cshotguns) + "\n"
-						
-						if self.g_players[x].p_cshotguns >= 3:
-							print self.g_players[x].p_name + " was SHOTGUNNED!\n"
-							self.g_players[x].p_rounds += 1
-							self.g_players[x].reset_shotguns()
-							p_turn = False
-							
-					elif action=="score" or action=="s":
-						print self.g_players[x].p_name + " scored " + str(c_pscore) + " brains!\n"
-						self.g_players[x].score(c_pscore)
-						self.g_players[x].p_rounds += 1
-						self.g_players[x].reset_shotguns()
-						p_turn = False
-						
-				if(self.g_players[x].p_score >= 13):
-					print self.g_players[x].p_name + " has won!\n"
-					self.g_status = False
-					break
-		
+    players = []
+    numplayers = 0
+
+    def __init__(self):
+        print "Welcome to Zombie Dice!"
+        print
+        numplayers = raw_input("How many players are there? ")
+        self.numplayers = int(numplayers)
+
+        for x in range(self.numplayers):
+            print "Player %d, what is your name? " % (x + 1)
+            self.players.append(Player(raw_input()))
+        print
+
+        self.play()
+
+    def play(self):
+        # greenDice = GreenDice()
+        # yellowDice = YellowDice()
+        # redDice = RedDice()
+        die = [
+            GreenDice(), GreenDice(), GreenDice(), GreenDice(),
+            GreenDice(), GreenDice(), YellowDice(), YellowDice(),
+            YellowDice(), YellowDice(), RedDice(), RedDice(), RedDice()
+        ]
+        faces = ['', 'Brain', 'Footprints', 'Shotgun']
+
+        status = True
+
+        while status:
+            for current_player in self.players:
+                p_turn = True
+                print "Current rankings:"
+                for scored_player in self.players:
+                    print "%s: %d brains" % (
+                        scored_player, scored_player.p_score)
+
+                print
+
+                c_pscore = 0
+                while p_turn:
+                    roll = []
+                    print "It's your turn, %s !" % current_player
+                    action = raw_input(
+                        "What will you do? ('(r)oll', '(s)core') ")
+                    if action in ("roll", "r"):
+                        die_list = []
+                        rolls = []
+                        for i in range(3):
+                            dice = random.choice(die)
+                            die_list.append(dice)
+                            rolls.append(dice.roll())
+
+                        print "%s rolled:" % current_player
+
+                        for temp_die, roll in zip(die_list, rolls):
+                            print "%s: %s" % (dice, faces[roll])
+
+                        print
+
+                        for roll in rolls:
+                            if roll == 1:
+                                c_pscore += 1
+                            if roll == 3:
+                                current_player.shotgun()
+
+                        print "%s's current score:" % current_player
+                        print "Brains: %d" % c_pscore
+                        print "Shotguns: %d" % current_player.p_cshotguns
+                        print
+
+                        if current_player.p_cshotguns >= 3:
+                            print "%s was SHOTGUNNED!" % current_player
+                            print
+                            current_player.p_rounds += 1
+                            current_player.reset_shotguns()
+                            p_turn = False
+
+                    elif action in ("score", "s"):
+                        print "%s scored %d brains!" % (
+                            current_player, c_pscore)
+                        current_player.score(c_pscore)
+                        current_player.p_rounds += 1
+                        current_player.reset_shotguns()
+                        p_turn = False
+
+                if current_player.p_score >= 13:
+                    print "%s has won!" % current_player
+                    print
+                    status = False
+                    break
+
 x = Game()
-		
-	
